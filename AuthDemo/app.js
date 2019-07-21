@@ -34,7 +34,7 @@ app.get("/", function(req, res) {
     res.render("home");
 });
 //SECRET ROUTE
-app.get("/secret", function(req, res){
+app.get("/secret", isLoggedIn, function(req, res){
     res.render("secret");
 });
 
@@ -67,11 +67,21 @@ app.post("/login", passport.authenticate("local", {
     failureRedirect: "/login"
 }) ,function(req, res){
 });
-
+//logout logic
 app.get("/logout", function(req, res){
     req.logout();
     res.redirect("/");
 });
+
+//check if the user is logged in
+function isLoggedIn(req, res, next){
+    if(req.isAuthenticated()){
+        return next();
+    }
+    else{
+        res.redirect("/login");
+    }
+}
 
 app.listen(3000, function(){
     console.log("Server is running");
